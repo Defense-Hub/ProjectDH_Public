@@ -3,7 +3,7 @@
 <br/>    
 <br/>    
     
-### Help Me Guardians Project
+### Help Me Guardians !👋
 <br/>    
 <br/> 
 
@@ -56,9 +56,9 @@
       
 ## 😃 게임 개요 
 
-`Genre` 3D 디펜스 게임  
+`Genre` **3D 디펜스 게임**  
 
-`Description` 다양한 유닛을 소환하고 조합하여 각기 다른 특성을 가진 보스들을 물리치는 게임입니다 ⚔️
+`Description` **다양한 유닛을 소환하고 조합하여 각기 다른 특성을 가진 보스들을 물리치는 게임입니다 ⚔️**
 
     
 
@@ -90,97 +90,96 @@
 
 ### 🛠 FSM
 #### 💡 사용 이유
-- **유닛과 Enemy의 상태를 유기적으로 관리하기 위함**
+- 유닛과 Enemy의 상태를 유기적으로 관리하기 위함
 
 #### 📌 사용 방법
--  **아래와 같은 구조로 사용**  
-<img src="https://github.com/user-attachments/assets/7268aa19-c270-452c-8abe-67abcd2ef54b" alt="coding" width="550px" />
+-  아래와 같은 구조로 사용
+<img src="https://github.com/user-attachments/assets/7268aa19-c270-452c-8abe-67abcd2ef54b" alt="coding" width="750px" />
 
 ---
 
 ### 🛠 Custom Editor Tool
 #### 💡 사용 이유
-- **유닛 혹은 적을 테스트 하거나 개발 편의성을 위한 커스텀 툴 개발**  
+- 유닛 혹은 적을 테스트 하거나 개발 편의성을 위한 커스텀 툴 개발
 
 #### 📌 사용처
-1️⃣ **특정 유닛 소환**  
-<img src="https://github.com/user-attachments/assets/b51a4014-0b4c-421f-acf1-19f50f4deef7" alt="coding" width="550px" />  
-2️⃣ **특정 보스 소환**  
-<img src="https://github.com/user-attachments/assets/0606b1db-4e7d-4975-be1a-a2d2046f55a5" alt="coding" width="550px" />  
-3️⃣ **씬 전환**  
-<img src="https://github.com/user-attachments/assets/02df5b8f-cf67-41d2-99a0-02200902215a" alt="coding" width="550px" />  
-4️⃣ **유닛 스텟 조절**  
-<img src="https://github.com/user-attachments/assets/b623efd9-00fc-4e59-88ca-39e0b3db0142" alt="coding" width="550px" />  
+**특정 유닛 소환**  
+<img src="https://github.com/user-attachments/assets/b51a4014-0b4c-421f-acf1-19f50f4deef7" alt="coding" width="450px" />  
+<br/>
+
+**특정 보스 소환**   
+<img src="https://github.com/user-attachments/assets/0606b1db-4e7d-4975-be1a-a2d2046f55a5" alt="coding" width="350px" />  
+<br/>
+
+**씬 전환**  
+<img src="https://github.com/user-attachments/assets/02df5b8f-cf67-41d2-99a0-02200902215a" alt="coding" width="450px" /> 
+<br/>
+
+**유닛 스텟 조절**  
+<img src="https://github.com/user-attachments/assets/b623efd9-00fc-4e59-88ca-39e0b3db0142" alt="coding" width="350px" />  
+<br/>
 
 ---
 
 ### 🛠 Addressable
 #### 💡 사용 이유
-- **메모리 효율성과 유연한 리소스 관리를 위해 사용**  
+- 메모리 효율성과 유연한 리소스 관리를 위해 사용   
 
 #### 📌 구현 방법
-1️⃣ **IResourceLocation으로 어드레서블 그룹에 저장된 리소스들의 경로를 저장**  
+`1. IResourceLocation으로 어드레서블 그룹에 저장된 리소스들의 경로를 저장`
 
-    public Dictionary<int, IList<IResourceLocation>> LocationDict { get;  private set; }  
-    
-2️⃣ **각각의 리소스 이름으로 정의된 Enum 타입 순서대로 IResourceLocation 리스트 재 정렬**  
+        public Dictionary<int, IList<IResourceLocation>> LocationDict { get;  private set; }    
+<br/>
+
+`2. 각각의 리소스 이름으로 정의된 Enum 타입 순서대로 IResourceLocation 리스트 재 정렬`  
+<br/>
 <img src="https://github.com/user-attachments/assets/9c196c19-9f96-4e05-ad1c-2e0c0290b631" alt="coding" width="550px" />  
-3️⃣ **IResourceLocation 정보를 매개변수로 어드레서블에 저장된 리소스를 로드**  
+<br/>
+
+`3. IResourceLocation 정보를 매개변수로 어드레서블에 저장된 리소스를 로드`  
+<br/>
 <img src="https://github.com/user-attachments/assets/ed9a50b9-017e-4e1a-b220-6a4d28e37b69" alt="coding" width="550px" />  
-
----
-
-### 🛠 Custom Editor Tool
-#### 💡 사용 이유
-- **유닛 혹은 적을 테스트 하거나 개발 편의성을 위한 커스텀 툴 개발**  
-
-#### 📌 사용처
-1️⃣ **특정 유닛 소환**  
-<img src="https://github.com/user-attachments/assets/b51a4014-0b4c-421f-acf1-19f50f4deef7" alt="coding" width="550px" />  
-2️⃣ **특정 보스 소환**  
-<img src="https://github.com/user-attachments/assets/0606b1db-4e7d-4975-be1a-a2d2046f55a5" alt="coding" width="550px" />  
-3️⃣ **씬 전환**   
-<img src="https://github.com/user-attachments/assets/02df5b8f-cf67-41d2-99a0-02200902215a" alt="coding" width="550px" />  
-4️⃣ **유닛 스텟 조절**  
-<img src="https://github.com/user-attachments/assets/b623efd9-00fc-4e59-88ca-39e0b3db0142" alt="coding" width="550px" />  
+<br/>
 
 ---
 
 ### 🛠 Batching
 #### 💡 설명
-- **Batch 최적화를 위해 Static Batching, Sprite Atlas, Terrain To Mesh 사용**  
-<img src="https://github.com/user-attachments/assets/b9a3fa67-d9cc-4520-b002-65fdf79d98cc" alt="coding" width="550px" />  
+- Batch 최적화를 위해 Static Batching, Sprite Atlas, Terrain To Mesh 사용   
+<img src="https://github.com/user-attachments/assets/b9a3fa67-d9cc-4520-b002-65fdf79d98cc" alt="coding" width="700px" />  
+<br/>
 
 ---
 
 ### 🛠 UI 동적 생성
 #### 💡 사용 이유
-- **다양한 게임 상황에 따른 UI 관리**  
-- **리소스 관리 최적화**  
-- **유연한 확장성**
+- 다양한 게임 상황에 따른 UI 관리  
+- 리소스 관리 최적화  
+- 유연한 확장성  
 
 #### 📌 구현 내용
-1️⃣ UIManager  
+`UIManager`
 - UI의 생성, 관리, 제거를 담당하는 중심 역할  
-- Singleton 패턴을 사용하여 게임 전체에서 유일하게 존재하는 UI 매니저 인스턴스를 제공함으로써 UI의 중앙 집중식 관리를 구현  
-  
-2️⃣ ShowPopupUI<T> 메서드  
+- Singleton 패턴을 사용하여 게임 전체에서 유일하게 존재하는 UI 매니저 인스턴스를 제공함으로써 UI의 중앙 집중식 관리를 구현   
+ 
+`ShowPopupUI<T> 메서드`  
 - 특정 UI 팝업을 비동기로 생성  
 - ResourceManager를 통해 해당 UI 타입의 게임 오브젝트를 불러오고, 이를 UIManager의 Root 오브젝트 하위에 배치  
-- 제네릭 타입을 사용하여 다양한 팝업 UI를 유연하게 생성
-  
-3️⃣ SetCanvas 메서드  
-- 동적으로 생성된 UI 오브젝트가 Canvas를 포함하도록 설정하는 역할  
-- Canvas의 renderMode를 `ScreenSpaceOverlay`로 설정하여 UI가 화면에 항상 오버레이 되도록 하며, 필요한 경우 정렬 순서를 지정하여 UI가 올바르게 렌더링되도록 함
+- 제네릭 타입을 사용하여 다양한 팝업 UI를 유연하게 생성   
 
-4️⃣ UI_Base 클래스   
+`SetCanvas 메서드`  
+- 동적으로 생성된 UI 오브젝트가 Canvas를 포함하도록 설정하는 역할  
+- Canvas의 renderMode를 `ScreenSpaceOverlay`로 설정하여 UI가 화면에 항상 오버레이 되도록 하며, 필요한 경우 정렬 순서를 지정하여 UI가 올바르게 렌더링되도록 함  
+
+`UI_Base 클래스`   
 - UI 컴포넌트를 관리하는 기본 클래스  
 - 다양한 UI 요소를 효율적으로 관리하기 위해, UI 요소를 Dictionary에 저장하고, 필요할 때 타입과 인덱스를 통해 해당 UI 요소를 가져옴  
-- UI 요소의 이벤트 핸들러를 추가하는 기능 포함
-  
-5️⃣ UI_EventHandler 클래스  
+- UI 요소의 이벤트 핸들러를 추가하는 기능 포함  
+
+`UI_EventHandler 클래스`  
 - UI의 클릭 및 드래그 이벤트를 처리하는 클래스  
-- 이 클래스는 Unity의 이벤트 시스템과 통합되어, 다양한 UI 상호작용을 관리  
+- 이 클래스는 Unity의 이벤트 시스템과 통합되어, 다양한 UI 상호작용을 관리    
+<br/>
 
 ---
 
@@ -191,21 +190,15 @@
 
 #### 📌 사용처
 <img src="https://github.com/user-attachments/assets/6a8fd9ca-b607-469d-a353-ab68bfae453d" alt="coding" width="550px" />  
+<br/>
 ⬆︎ 유저들의 이탈 시점 Data  
 <br/>
+<br/>
 
-> SQL 탐색기로 게임 종료 시 어느 스테이지까지 클리어 했는지에 대한 RawData 분석
+` SQL 탐색기로 게임 종료 시 어느 스테이지까지 클리어 했는지에 대한 RawData 분석`
 
 - 게임 중간에 이탈하는 유저들이 많다는 **유저 데이터 확보**  
 - 중간에 빠져나가거나 끝까지 클리어 하거나 하는 **유저 스타일 파악**  
-
-<br/>
-
-**위 정보들을 바탕으로 중간에 이탈하는 유저들을 막기 위해 계획 중인 사안**
-1. 5Stage 전후 러닝 커브에 맞춘 밸런스 조절  
-2. 유저들을 후킹할만한 요소 추가  
-
-
 
 <br/>    
 <br/>  
@@ -436,7 +429,7 @@
 </details>
 
 <details>
-<summary> 👿 사운드 슬라이드 바 값 설정 오류  </summary>
+<summary> 👿 사운드 슬라이드 바 값 설정 오류 </summary>
 <div markdown="1">
 
 #### 🚨 문제 상황 
