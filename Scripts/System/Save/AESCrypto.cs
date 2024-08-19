@@ -79,7 +79,7 @@ public class AESCrypto
             ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
             // 암호화된 바이트 배열을 복호화 
             byte[] decrypted = decryptor.TransformFinalBlock(buffer, 0, buffer.Length);
-
+            
             // 복호화된 바이트 배열을 UTF-8 문자열로 변환 후 반환
             return Encoding.UTF8.GetString(decrypted);
         }

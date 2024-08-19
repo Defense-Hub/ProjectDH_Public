@@ -47,11 +47,14 @@ public class UI_Gacha : UI_Popup
         CheckGemStone();
 
         PlayerDataManager.Instance.inGameData.OnChangeGemStone += UpdateGemStoneText;
+
+        GameManager.Instance.UnitSpawn.Controller.OnUnBlockSummonBtn += OnUnBlockGachaBtn;
     }
 
     private void UpdateGemStoneText(int amount)
     {
         GetText((int)Texts.TXT_Gacha_GemStone).text = amount.ToString();
+        CheckGemStone();
     }
 
     private void LegendryGachaUpdate()
@@ -176,6 +179,18 @@ public class UI_Gacha : UI_Popup
     private void UpdateButtonAndText(Buttons buttonType, int reinforceValue)
     {
         bool hasEnoughGemStones = PlayerDataManager.Instance.inGameData.HasGemStone(reinforceValue);
-        GetButton((int)buttonType).interactable = hasEnoughGemStones;
+        GetButton((int)buttonType).interactable = hasEnoughGemStones && !GameManager.Instance.UnitSpawn.Controller.IsFullTile;
+    }
+
+    private void OnUnBlockGachaBtn(bool isUnBlock)
+    {
+        if (GetButton((int)Buttons.Btn_Normal) != null)
+            GetButton((int)Buttons.Btn_Normal).interactable = isUnBlock;
+        
+        if (GetButton((int)Buttons.Btn_Unique) != null)
+            GetButton((int)Buttons.Btn_Unique).interactable = isUnBlock;
+        
+        if (GetButton((int)Buttons.Btn_Legendary) != null)
+            GetButton((int)Buttons.Btn_Legendary).interactable = isUnBlock;
     }
 }

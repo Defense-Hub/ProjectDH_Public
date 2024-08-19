@@ -54,7 +54,7 @@ public class ShuffleUnitSkill : CoolTimeSkill
 
     private IEnumerator ShuffleUnitSKill()
     {
-        UIManager.Instance.UI_Interface.ActivateBossSkillIndicator($"보스가 유닛 위치를 무작위로 바꿉니다.");
+        UIManager.Instance.UI_Interface.ActivateBossSkillIndicator($"보스가 유닛 위치를 뒤섞습니다.");
 
         GameManager.Instance.CameraEvent.CameraShakeEffect(4f);
         SoundManager.Instance.PlayInGameSfx(EInGameSfx.ShuffleUnitSkill);

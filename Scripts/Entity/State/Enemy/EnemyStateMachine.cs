@@ -23,10 +23,11 @@ public class EnemyStateMachine : EntityStateMachine
     // HardCC State 변경 함수
     public void ChangeHardCCState(CCInfo ccInfo)
     {
+        Entity.StatusHandler.IsHardCC = true;
         //더 높은 우선순위의 CCInfo가 들어왔을 때 ccInfo 변경
         if (((int)ccInfo.ccType > (int)curCCInfo.ccType))
         {
-            curCCInfo = ccInfo;
+            SetCCInfo(ccInfo);
             ChangeState(HardCCState);
         }
         // curCCInfo의 ccType과 새로들어온 ccInfo의 ccType이 같을 경우 duration만 갱신
@@ -34,5 +35,15 @@ public class EnemyStateMachine : EntityStateMachine
         {
             curCCInfo.duration = ccInfo.duration;
         }
+    }
+
+    public void SetCCInfo(CCInfo ccInfo)
+    {
+        curCCInfo = ccInfo;
+    }
+
+    public void SetDefaultCCInfo()
+    {
+        curCCInfo = default;
     }
 }

@@ -8,11 +8,14 @@ public class UnitSkill : Skill
     protected Unit unit;
     protected List<Enemy> targetEnemies;
     protected Enemy targetEnemy;
+    protected bool isTargetOn; // true일 경우 사용 가능, 다만 범위 스킬일 경우 그냥 시전 가능
+
     private float damage;
     public void Init(Unit unit)
     {
         this.unit = unit;
         targetEnemies = new List<Enemy>();
+        isTargetOn = true;
     }
 
     #region UnitSkill
@@ -24,7 +27,13 @@ public class UnitSkill : Skill
         if (targetEnemy == null)
             CreateSingleTargetListByHealth();
 
-        if (targetEnemy == null) return;
+        if (targetEnemy == null)
+        {
+            isTargetOn = false;
+            return; 
+        }
+
+        isTargetOn = true;
         SingleAttack(damage, specialAttackData);
     }
 
@@ -34,7 +43,13 @@ public class UnitSkill : Skill
         if (targetEnemy == null)
             CreateSingleTargetListByHealth();
 
-        if (targetEnemy == null) return;
+        if (targetEnemy == null) 
+        {
+            isTargetOn = false;
+            return; 
+        }
+
+        isTargetOn = true;
         SingleAttack(damage);
     }
 

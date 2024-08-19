@@ -230,7 +230,10 @@ public class SoundManager : Singleton<SoundManager>
     public void SetAudioVolume(EAudioMixerType audioMixerType, float volume)
     {
         // 오디오 믹서의 값은 -80 ~ 0까지이기 때문에 0.0001 ~ 1의 Log10 * 20을 한다.
-        audioMixer.SetFloat(audioMixerType.ToString(), Mathf.Log10(volume) * 20);
+        // volume은 0.0001~1 값이 들어오도록 방어코드 작성
+        if (volume < 0.0001f)
+            volume = 0.0001f;
+        audioMixer.SetFloat(audioMixerType.ToString(), Mathf.Log10(volume) * 20f);
     }
 
     public void SetAudioMute(EAudioMixerType audioMixerType)
@@ -252,8 +255,11 @@ public class SoundManager : Singleton<SoundManager>
 
     public float GetAudioVolume(EAudioMixerType audioMixerType)
     {
+        // volumeDb는 -80~0 사이값 가짐
         audioMixer.GetFloat(audioMixerType.ToString(), out float volumeDb);
-        float linearVolume = Mathf.Pow(10, volumeDb / 20); 
+        // 10의 volumeDb/20 거듭제곱
+        float linearVolume = Mathf.Pow(10, volumeDb / 20f);
+        // linearVolume 값을 0과  1사이의 값으로 변한
         return Mathf.Clamp01(linearVolume);
     }
 

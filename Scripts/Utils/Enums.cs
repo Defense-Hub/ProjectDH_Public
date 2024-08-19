@@ -103,3 +103,12 @@ public enum EGachaResult
     Fail = -1,
     Success,
 }
+
+public enum EElemental
+{
+    Fire = 0,
+    Ice = 1,
+    Ground = 2,
+    Dark = 3,
+    Water = 4
+}

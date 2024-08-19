@@ -48,7 +48,7 @@ public class BlockUnitSpawnSkill : CoolTimeSkill
 
         if (GameManager.Instance.Stage.SpawnEnemyList.Count == 0 && waterBoss.CurSplitCount ==0)
         {
-            UIManager.Instance.UI_Interface.UnBlockSummonBtn();
+            UIManager.Instance.UI_Interface.UnBlockSummonBtn(false);
             UIManager.Instance.UI_Interface.DeActivateBossSkillIndicator();
             if (waterBoss.ui_CountDown != null)
                 waterBoss.ui_CountDown.DestroyUI();
@@ -60,13 +60,13 @@ public class BlockUnitSpawnSkill : CoolTimeSkill
         if (waterBoss.ui_CountDown != null)
         {
             UIManager.Instance.UI_Interface.ActivateBossSkillIndicator($"보스가 유닛 소환 버튼을 막습니다");
-            UIManager.Instance.UI_Interface.BlockSummonBtn();
+            UIManager.Instance.UI_Interface.UnBlockSummonBtn(true);
             SoundManager.Instance.PlayInGameSfx(EInGameSfx.BlockUnitSpawnSkill);
 
             waterBoss.ui_CountDown.StartCountDown(
                 blockDuration,
                 () => {
-                    UIManager.Instance.UI_Interface.UnBlockSummonBtn();
+                    UIManager.Instance.UI_Interface.UnBlockSummonBtn(false);
                     UIManager.Instance.UI_Interface.DeActivateBossSkillIndicator();
                 });
         }

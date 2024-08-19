@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Sell: MonoBehaviour
+public class UI_Sell : MonoBehaviour
 {
     [SerializeField] private Vector3 distance;
     [SerializeField] private UI_Combination uiCombination;
@@ -15,10 +15,10 @@ public class UI_Sell: MonoBehaviour
     [SerializeField] private UnitTile tile;
     private RectTransform rect;
 
-    
+
     private void Awake()
     {
-        rect = GetComponent<RectTransform>();        
+        rect = GetComponent<RectTransform>();
     }
 
     public void OnSellBtn(EUnitRank rank, UnitTile tile)
@@ -35,7 +35,6 @@ public class UI_Sell: MonoBehaviour
         sellTXT.text = ($"+{GameManager.Instance.System.Sell.GetSellCurrency(rank)}");
 
         gameObject.SetActive(true);
-        blockImage.SetActive(true);
 
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(tile.transform.position);
         rect.position = screenPosition + distance;
@@ -48,29 +47,38 @@ public class UI_Sell: MonoBehaviour
         else
         {
             gemStoneIcon.gameObject.SetActive(true);
-            goldIcon.gameObject.SetActive(false);            
+            goldIcon.gameObject.SetActive(false);
         }
     }
-    
+
     //전역변수로 타일 저장
     public void SellUnit()
     {
-        if(tile == null)
+        if (tile == null)
         {
             Debug.LogError("Tile Null");
             return;
         }
+
         GameManager.Instance.System.Sell.SellUnit(tile.TileNum);
         DisableCombinationUI();
     }
 
     public void DisableCombinationUI()
-    {        
-        tile = null;
+    {
+        if (tile != null)
+        {
+            if (tile.UnitStatus != null)
+            {
+                tile.UnitStatus.gameObject.SetActive(false);
+            }
+
+            tile = null;
+        }
+
         gameObject.SetActive(false);
         uiCombination.gameObject.SetActive(false);
         blockImage.gameObject.SetActive(false);
         GameManager.Instance.UnitSpawn.Controller.UnitAttackRange.gameObject.SetActive(false);
     }
-
 }

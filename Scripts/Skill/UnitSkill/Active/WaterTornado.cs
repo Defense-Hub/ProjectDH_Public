@@ -17,14 +17,13 @@ public class WaterTornado : ActiveSkill
 
     public override void UseSkill()
     {
-        base.UseSkill();
         Init();
         ActiveSkill();
     }
 
     private void ActiveSkill()
     {
-        ActiveEffect();
+        InitEffect();
         if (attackCoroutine != null)
         {
             StopCoroutine(attackCoroutine);
@@ -46,7 +45,7 @@ public class WaterTornado : ActiveSkill
         EndSkill();
     }
 
-    private void ActiveEffect()
+    private void InitEffect()
     {
         effect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_WaterTornado).ReturnMyComponent<Effect>();
     }

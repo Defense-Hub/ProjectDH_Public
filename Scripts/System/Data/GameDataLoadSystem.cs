@@ -25,7 +25,14 @@ public class GameDataLoadSystem : MonoBehaviour
         InitDataLoad();
     }
 
-
+    private async void MainSceneTestInit()
+    {
+        PlayerDataManager.Instance.CreateInGameData();
+        GameManager.Instance.System.SetGameSystem();
+        await ResourceManager.Instance.SetPoolData();
+        GameManager.Instance.Stage.InitStageData();
+        PlayerDataManager.Instance.CallPlayerDataUISetting();
+    }
     private async void InitDataLoad()
     {
         await AddressableManager.Instance.GetLocations();
@@ -43,11 +50,7 @@ public class GameDataLoadSystem : MonoBehaviour
 
         if (GameManager.Instance.isMainSceneTest)
         {
-            PlayerDataManager.Instance.CreateInGameData();
-            GameManager.Instance.System.SetGameSystem();
-            await ResourceManager.Instance.SetPoolData();
-            GameManager.Instance.Stage.InitStageData();
-            PlayerDataManager.Instance.CallPlayerDataUISetting();
+            MainSceneTestInit();
         }
 
         if (delayCoroutine != null)
@@ -75,7 +78,6 @@ public class GameDataLoadSystem : MonoBehaviour
                 if (GameManager.Instance.isStartSceneTest) // 스타트 씬 테스트일 떄
                 {
                     GameManager.Instance.StartScene.StartSceneInit();
-                    UIManager.Instance.UI_StartScene.ActiveNameInputField(); //  이름 입력
                 }
                 else
                 {

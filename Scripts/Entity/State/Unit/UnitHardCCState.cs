@@ -56,26 +56,19 @@ public class UnitHardCCState : UnitBaseState
                 // 이펙트 크기 & 스케일 지정
                 effect.SetEffect(stateMachine.Unit.EffectWayPoint.localScale, stateMachine.Unit.EffectWayPoint.position);
                 break;
-            case ECCType.Default:
-            case ECCType.Slow:
             case ECCType.Freeze:
+                effect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_EntityFreeze).ReturnMyComponent<Effect>();
+                effect.SetEffect(stateMachine.Unit.EffectWayPoint.localScale, stateMachine.Unit.EffectWayPoint.position);
+                break;
             case ECCType.Lava:
+                effect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_EntityLava).ReturnMyComponent<Effect>();
+                effect.SetEffect(stateMachine.Unit.EffectWayPoint.localScale, stateMachine.Unit.EffectWayPoint.position);
                 break;
         }
     }
 
     private void DeActivateEffect()
     {
-        switch (stateMachine.curCCInfo.ccType)
-        {
-            case ECCType.Stun:
-                effect.gameObject.SetActive(false);
-                break;
-            case ECCType.Default:
-            case ECCType.Slow:
-            case ECCType.Freeze:
-            case ECCType.Lava:
-                break;
-        }
+        effect.gameObject.SetActive(false);
     }
 }

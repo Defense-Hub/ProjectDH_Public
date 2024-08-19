@@ -12,6 +12,7 @@ public class StatusHandler : MonoBehaviour
     
     private Slow slow = new Slow();
     private Stun stun = new Stun();
+    public Coroutine coroutine;
 
     public void ApplyStatusEffect(ESpecialAttackType specialAttackType, SpecialAttack specialAttackData, Enemy target)
     {
@@ -51,7 +52,7 @@ public class StatusHandler : MonoBehaviour
         return StartCoroutine(coroutine);
     }
 
-    public void StopRunningCoroutine(Coroutine coroutine)
+    public void StopRunningCoroutine()
     {
         if(coroutine != null)
         {

@@ -30,6 +30,7 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         //Screen.SetResolution(1080,1920,true);
         Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
         
         if (isMainSceneTest)
         {

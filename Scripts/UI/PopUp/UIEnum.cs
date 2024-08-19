@@ -37,7 +37,12 @@ public enum Texts
 
     [Header("UI_StartScene")]
     TXT_PlayerName,
-    TXT_MaxStageVal
+    TXT_MaxStageVal,
+
+    TXT_BossWave,
+    TXT_BossType,
+    TXT_BossDescription,
+    TXT_BossLimitTime
 }
 
 public enum EImages
@@ -45,7 +50,7 @@ public enum EImages
     [Header("UI_Gacha")]
     Image_Normal_Icon,
     Image_Unique_Icon,
-    Image_Legendary_Icon,
+    Image_Legendary_Icon,    
 }
 
 public enum Objects
@@ -55,6 +60,7 @@ public enum Objects
     Object_BossUI,
     Object_BossHpBarUI,
     Object_BossSkillIndicator,
+    Object_GameSpeed,
 }
 
 public enum Buttons
@@ -66,6 +72,9 @@ public enum Buttons
     Btn_Summon,
     Btn_Myth,
     Btn_Misson,
+    Btn_2X,
+    Btn_2XBG,
+    Btn_Close,
 
     [Header("UI_Gacha")]
     Btn_Normal,
@@ -84,6 +93,7 @@ public enum Buttons
     Btn_StartSceneSetting,
     Btn_Start,
     Btn_Quit,
+    Btn_Dogam,
 
     [Header("UI_Hunt")]
     Btn_Hunt,

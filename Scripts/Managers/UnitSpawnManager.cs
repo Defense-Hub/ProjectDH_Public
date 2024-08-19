@@ -52,7 +52,7 @@ public class UnitSpawnManager : MonoBehaviour
     {
         if (!Controller.IsAvailableSpawn())
         {
-            Debug.LogWarning("소환 타일이 다 찼습니다 !");
+            Debug.LogWarning("Summon => Summon Tile is Full");
             return;
         }
         
@@ -83,7 +83,7 @@ public class UnitSpawnManager : MonoBehaviour
     {
         if (!Controller.IsAvailableSpawn())
         {
-            Debug.LogWarning("소환 타일이 다 찼습니다 !");
+            Debug.LogWarning("Summon => Summon Tile is Full");
             return;
         }
 
@@ -103,7 +103,7 @@ public class UnitSpawnManager : MonoBehaviour
         Unit spawnUnit = GameManager.Instance.Pool.SpawnFromPool(id).ReturnMyComponent<Unit>();
         if (spawnUnit == null)
         {
-            Debug.LogError($"{id}의 유닛은 존재하지 않습니다 !");
+            Debug.LogError($"{id} is not exist");
             return;
         }
         

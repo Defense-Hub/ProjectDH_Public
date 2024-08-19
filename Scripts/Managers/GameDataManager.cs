@@ -6,6 +6,7 @@ using EnemyDataTable;
 using UnitDataTable;
 using UGS;
 using UnityEngine;
+using UnityEngine.U2D;
 using UnityEngine.UI;
 
 public class GameDataManager : Singleton<GameDataManager> // Json으로 로드하는 데이터
@@ -20,11 +21,26 @@ public class GameDataManager : Singleton<GameDataManager> // Json으로 로드�
     [field: SerializeField] private Color rareUnitColor;
     [field: SerializeField] private Color uniqueUnitColor;
     [field: SerializeField] private Color legendaryUnitColor;
+    [field: SerializeField] private Color epicUnitColor;
 
     public Color CommonUnitColor => commonUnitColor;
     public Color RareUnitColor => rareUnitColor;
     public Color UniqueUnitColor => uniqueUnitColor;
     public Color LegendaryUnitColor => legendaryUnitColor;
+    public Color EpicUnitColor => epicUnitColor;
+
+    [field: Header("#Unit Projectile Material")]
+    [field: SerializeField] private Material fireProjectileMaterial;
+    [field: SerializeField] private Material iceProjectileMaterial;
+    [field: SerializeField] private Material groundProjectileMaterial;
+    [field: SerializeField] private Material darkProjectileMaterial;
+    [field: SerializeField] private Material waterProjectileMaterial;
+
+    public Material FireProjectileMaterial => fireProjectileMaterial;
+    public Material IceProjectileMaterial => iceProjectileMaterial;
+    public Material GroundProjectileMaterial => groundProjectileMaterial;
+    public Material DarkProjectileMaterial => darkProjectileMaterial;
+    public Material WaterProjectileMaterial => waterProjectileMaterial;
 
 
     [field: Header("# Buff Data Info")]
@@ -373,24 +389,41 @@ public class GameDataManager : Singleton<GameDataManager> // Json으로 로드�
     private async Task LoadThumbnail()
     {
         int idx = 0;
+        SpriteAtlas atlas =  await AddressableManager.Instance.LoadAsset<SpriteAtlas>(EAddressableType.Thumbnail, idx);
+
         foreach (var enumValue in Enum.GetValues(typeof(EUnitRCode)))
         {
             int intEnumValue = (int)enumValue;
-            Texture2D loadThumbnail = await AddressableManager.Instance.LoadAsset<Texture2D>(EAddressableType.Thumbnail, idx++);
-
+            Sprite loadThumbnail = atlas.GetSprite(enumValue.ToString());
+        
             if (UnitBases.TryGetValue(intEnumValue, out var data))
             {
-                // 텍스처 2D의 전체 영역 설정
-                Rect rect = new Rect(0, 0, loadThumbnail.width, loadThumbnail.height);
-                // Sprite 생성 (텍스쳐, 영역, 피봇, PixelPerUnit = 100)
-                Sprite sprite = Sprite.Create(loadThumbnail, rect, new Vector2(0.5f, 0.5f));
-                data.Thumbnail = sprite;
+                data.Thumbnail = loadThumbnail;
             }
             else
             {
                 Debug.LogError($"{intEnumValue} => Thumbnail Load Error");
             }
         }
+        
+        // foreach (var enumValue in Enum.GetValues(typeof(EUnitRCode)))
+        // {
+        //     int intEnumValue = (int)enumValue;
+        //     Texture2D loadThumbnail = await AddressableManager.Instance.LoadAsset<Texture2D>(EAddressableType.Thumbnail, idx++);
+        //
+        //     if (UnitBases.TryGetValue(intEnumValue, out var data))
+        //     {
+        //         // 텍스처 2D의 전체 영역 설정
+        //         Rect rect = new Rect(0, 0, loadThumbnail.width, loadThumbnail.height);
+        //         // Sprite 생성 (텍스쳐, 영역, 피봇, PixelPerUnit = 100)
+        //         Sprite sprite = Sprite.Create(loadThumbnail, rect, new Vector2(0.5f, 0.5f));
+        //         data.Thumbnail = sprite;
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError($"{intEnumValue} => Thumbnail Load Error");
+        //     }
+        // }
     }
 
     #endregion

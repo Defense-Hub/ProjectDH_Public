@@ -14,7 +14,6 @@ public class FireFlamethrower : ActiveSkill
 
     public override void UseSkill()
     {
-        base.UseSkill();
         InitBtn();
         ticDelayTime = new WaitForSeconds(ticDelay);
     }
@@ -71,6 +70,5 @@ public class FireFlamethrower : ActiveSkill
         StopCoroutine(attackCoroutine);
         effect.OnEnd -= EndSkill;
         base.EndSkill();
-        Debug.Log("끝!");
     }
 }

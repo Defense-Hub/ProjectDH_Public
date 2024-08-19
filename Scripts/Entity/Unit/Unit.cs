@@ -7,7 +7,7 @@ public class Unit : Entity //IPointerDownHandler
     public UnitDataHandler DataHandler { get; private set; }
     public UnitSkillHandler SkillHandler { get; private set; }
     public UnitAnimationEventHandler AnimationEventHandler { get; private set; }
-    [SerializeField] private SpriteRenderer UnitTierIndicator;
+    [SerializeField] private ParticleSystem UnitTierIndicator;
 
     // SO로 받아오는 기본 스텟
     [Header("# Stat정보")]
@@ -39,13 +39,12 @@ public class Unit : Entity //IPointerDownHandler
         // 로드가 잘 된경우
         if (GameDataManager.Instance.UnitBases.ContainsKey(id))
         {
-            Debug.Log("로드 성공"); 
             StatHandler.Init(GameDataManager.Instance.UnitBases[id]);
             DataHandler.InitData(GameDataManager.Instance.UnitBases[id]);
         }
         else
         {
-            Debug.Log("로드 실패");
+            Debug.LogError("로드 실패");
             StatHandler.Init(baseStat);
             DataHandler.InitData(baseStat);
         }
@@ -81,22 +80,27 @@ public class Unit : Entity //IPointerDownHandler
     private void SetTierIndicator()
     {
         EUnitRank curUnitRank = DataHandler.Data.UnitRank;
+        var indicator = UnitTierIndicator.main;
         switch (curUnitRank)
         {
             case EUnitRank.Common:
-                UnitTierIndicator.color = GameDataManager.Instance.CommonUnitColor;
+                indicator.startColor = GameDataManager.Instance.CommonUnitColor;
                 break;
 
             case EUnitRank.Rare:
-                UnitTierIndicator.color = GameDataManager.Instance.RareUnitColor;
+                indicator.startColor = GameDataManager.Instance.RareUnitColor;
                 break;
 
             case EUnitRank.Unique:
-                UnitTierIndicator.color = GameDataManager.Instance.UniqueUnitColor;
+                indicator.startColor = GameDataManager.Instance.UniqueUnitColor;
                 break;
 
             case EUnitRank.Legendary:
-                UnitTierIndicator.color = GameDataManager.Instance.LegendaryUnitColor;
+                indicator.startColor = GameDataManager.Instance.LegendaryUnitColor;
+                break;
+
+            case EUnitRank.Epic:
+                indicator.startColor = GameDataManager.Instance.EpicUnitColor;
                 break;
         }
     }

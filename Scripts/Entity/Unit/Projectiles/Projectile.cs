@@ -10,26 +10,42 @@ public class Projectile : PoolObject
     private ESpecialAttackType specialAttackType;
     // specialAttack 지속 시간, 확률 
     private float attackPower;
+    private float projectileMoveSpeed;
+    private Coroutine ActiveProjectile;
+
 
     [SerializeField] private float disableRange = 0.2f;
-    [SerializeField] private float projectileMoveSpeed = 0.5f;
+    [SerializeField] private float projectileMoveSpeedOrigin = 10f;
+    [SerializeField] private MeshRenderer meshRenderer;
 
-    private Coroutine ActiveProjectile;
 
     private void Awake()
     {
-        targetList = new List<Enemy>();
-        
+        targetList = new List<Enemy>();  
     }
 
-    public void Init(UnitStat stat, Enemy target)
+    public void Init(UnitStat stat, Enemy target, int id)
     {
-        // 값 설정
-        //this.target = target;
+        // 내부 초기화
+        meshRenderer.enabled = true;
+        projectileMoveSpeed = projectileMoveSpeedOrigin;
+
+        // 타겟 설정
         targetList.Add(target);
+
+        // 스텟 설정
         attackPower = stat.AttackPower;
         specialAttack = stat.SpecialAttack;
         SetSpecialAttackType(stat.SpecialAttack);
+
+        // 렌더러 설정
+        SetProjectileRenderer(id);
+
+        if(stat.AttackType == EAttackType.Melee)
+        {
+            meshRenderer.enabled = false;
+            projectileMoveSpeed *= 10f;
+        }
 
         // 발사
         if (ActiveProjectile != null) 
@@ -130,6 +146,31 @@ public class Projectile : PoolObject
         if (RandomEvent.GetBoolRandomResult(specialAttack.Slow.Probabillity))
         {
             specialAttackType |= ESpecialAttackType.Slow;
+        }
+    }
+
+    private void SetProjectileRenderer(int id)
+    {
+        switch(id % 100)
+        {
+            case (int)EElemental.Fire:
+                meshRenderer.material = GameDataManager.Instance.FireProjectileMaterial;
+                break;
+            case (int)EElemental.Ice:
+                meshRenderer.material = GameDataManager.Instance.IceProjectileMaterial;
+                break;
+            case (int)EElemental.Dark:
+                meshRenderer.material = GameDataManager.Instance.DarkProjectileMaterial;
+                break;
+            case (int)EElemental.Ground:
+                meshRenderer.material = GameDataManager.Instance.GroundProjectileMaterial;
+                break;
+            case (int)EElemental.Water:
+                meshRenderer.material = GameDataManager.Instance.WaterProjectileMaterial;
+                break;
+            default:
+                meshRenderer.material = GameDataManager.Instance.FireProjectileMaterial;
+                break;
         }
     }
 

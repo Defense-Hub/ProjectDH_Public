@@ -61,6 +61,7 @@ public enum EEffectRcode
     E_DarkSpear,
     E_WaterTornado,
     E_WaterSlide,
+    E_SummonEffect,
 }
 public enum EFireEnemyRCode
 {
@@ -125,6 +126,11 @@ public enum EUnitRCode
     WEP001,
 }
 
+public enum EAtlasRcode
+{
+    EntityAtlas
+}
+
 public enum EUIRCode
 {
     UI_UnitStatus,
@@ -138,5 +144,9 @@ public enum EUIRCode
     UI_GameClear,
     UI_Summon,
     UI_Hunt,
-    UI_HuntInfo
+    UI_HuntInfo,
+    UI_BossIndicator,
+    UI_LavaIndicator,
+    UI_Dogam,
+    UI_DogamSlot
 }

@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class UI_StartScene : UI_HUD
 {
+    public UI_Dogam UI_Dogam { get; set; }
+
     private void Start()
     {
         UIManager.Instance.UI_StartScene = this;
@@ -19,9 +21,11 @@ public class UI_StartScene : UI_HUD
 
         GetButton((int)Buttons.Btn_StartSceneSetting)
             .AddOnClickEvent(async () => await OnClickSetting(Buttons.Btn_StartSceneSetting));
+        GetButton((int)Buttons.Btn_Dogam).
+            AddOnClickEvent(async () => await OnClickDogam(Buttons.Btn_Dogam));
         GetButton((int)Buttons.Btn_Start).AddOnClickEvent(GameStartBtnOnClick);
         GetButton((int)Buttons.Btn_Quit).AddOnClickEvent(GameManager.Instance.GameQuit);
-        
+
         if (PlayerDataManager.Instance.SaveData != null)
         {
             GetText((int)Texts.TXT_MaxStageVal).text = PlayerDataManager.Instance.SaveData.MaxStageLevel.ToString();
@@ -56,6 +60,12 @@ public class UI_StartScene : UI_HUD
         BtnAnimaiton(buttonType);
         UI_Settings ui_Settings = await UIManager.Instance.ShowPopupUI<UI_Settings>(EUIRCode.UI_Settings);
         ui_Settings.CheckScene(ESceneType.StartScene);
+    }
+
+    private async Task OnClickDogam(Buttons buttonType)
+    {
+        BtnAnimaiton(buttonType);
+        await UIManager.Instance.ShowPopupUI<UI_Dogam>(EUIRCode.UI_Dogam);
     }
 
     private void BtnAnimaiton(Buttons buttonType)

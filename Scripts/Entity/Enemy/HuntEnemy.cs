@@ -33,11 +33,15 @@ public class HuntEnemy : Enemy
     {
         Animator.SetTrigger(AnimationData.DieParameterHash);
         if (dieAnimLength == null)
-        {
             dieAnimLength = new WaitForSeconds(Animator.GetCurrentAnimatorClipInfo(0).Length);
-        }
+
         yield return dieAnimLength;
-        
+
+        // 이펙트 꺼지도록 방어코드
+        if(StateMachine.HardCCState.CurCCEffect != null)
+            StateMachine.HardCCState.DeActivateEffect();
+        StatusHandler.StopRunningCoroutine();
+
         gameObject.SetActive(false);
         SubtractHealthEvent();
     }

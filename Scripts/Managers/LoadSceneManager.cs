@@ -75,6 +75,7 @@ public class LoadSceneManager : MonoBehaviour
     {
         GameManager.Instance.Tutorial.TutorialUIController.DialogueEvent.StartDialouge();
         SceneManager.UnloadSceneAsync(ESceneType.TransitionScene.ToString());
+        ResourceManager.Instance.ResetStageResource();
     }
 
     #endregion
@@ -95,7 +96,7 @@ public class LoadSceneManager : MonoBehaviour
     private void GoTutorialToStartCallback()
     {
         // UIManager.Instance.ResetPopUp();
-        ResourceManager.Instance.ResetUI();
+        ResourceManager.Instance.ResetStageResource();
         PlayerDataManager.Instance.ResetEvent();
 
         SceneManager.UnloadSceneAsync(ESceneType.TutorialScene.ToString());
@@ -120,13 +121,15 @@ public class LoadSceneManager : MonoBehaviour
 
     public void LoadMainToStartScene()
     {
-        PlayerDataManager.Instance.SavePlayerData();
 
         if (sceneLoadCoroutine != null)
         {
-            StopCoroutine(sceneLoadCoroutine);
+            return;
+            // StopCoroutine(sceneLoadCoroutine);
         }
 
+        PlayerDataManager.Instance.SavePlayerData();
+        
         sceneLoadCoroutine = StartCoroutine(DelayTransitionCoroutine(GoMainToStartCallback));
     }
 
@@ -137,7 +140,7 @@ public class LoadSceneManager : MonoBehaviour
         // UIManager.Instance.ResetPopUp();
         PlayerDataManager.Instance.ResetEvent();
         SceneManager.UnloadSceneAsync(ESceneType.MainScene.ToString());
-        ResourceManager.Instance.ResetUI();
+        ResourceManager.Instance.ResetStageResource();
 
         if (sceneLoadCoroutine != null)
         {
@@ -197,5 +200,7 @@ public class LoadSceneManager : MonoBehaviour
         yield return wait;
 
         GameManager.Instance.Transition.EndTransition(endCallback);
+
+        sceneLoadCoroutine = null;
     }
 }

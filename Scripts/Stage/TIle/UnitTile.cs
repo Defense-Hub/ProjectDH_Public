@@ -3,55 +3,13 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
-public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
     [field: SerializeField] public Unit[] SpawnUnits { get; private set; } = new Unit[2];
     [field: SerializeField] public int UnitCount { get; set; } = 0;
     public int TileNum { get; set; } = 0;
-    private LayerMask layerMask;
-    private Camera mainCamera;
-    private bool isDrag;
-
-    // Attack Range
-    public Unit_AttackRange Unit_AttackRange { get; set; }
-    public UI_Combination UI_Combination { get; set; }
-    public UI_Sell UI_Sell { get; set; }
-
-    // TIle Move Arrow
-    private Vector3[] unitPositions = new Vector3[3];
-    private LineRenderer arrowLine = null;
-    private Vector3 drawStartPos;
-    private Collider hitTileCol;
-    private const float unitPostiontOffset = 0.25f;
-    private const float raycastDistance = 100f;
-
-    // StatusEffect
-    private Effect statusEffect;
-    private Coroutine statusEffectCoroutine;
-    private float statusEffectDuration;
-
-    // Freeze 
-    public bool IsFreeze { get; private set; }
-    // Lava
-    public bool IsLava { get; private set; }
-
-    [SerializeField]private bool IsClick;
-    private float timer;
-    private readonly float pressTime = 0.5f;
-    private UI_UnitStatus unitStatus;
-    private void Awake()
-    {
-        layerMask = LayerMask.GetMask("UnitTile");
-
-        arrowLine = GetComponent<LineRenderer>();
-
-        unitPositions[0] = Vector3.zero;
-        unitPositions[1] = new Vector3(-unitPostiontOffset, 0, unitPostiontOffset);
-        unitPositions[2] = new Vector3(unitPostiontOffset, 0, -unitPostiontOffset);
-
-        mainCamera = Camera.main;
-    }
 
     public void SetUnit(Unit spawnUnit)
     {
@@ -63,19 +21,38 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     private void SetUnitInitPosition() // 초기 위치 세팅
     {
         Vector3 basePosition = transform.position;
-
+        SummonEffect summonEffect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_SummonEffect).ReturnMyComponent<SummonEffect>();
+        
         if (UnitCount == 0)
         {
             SpawnUnits[0].transform.position = basePosition + unitPositions[0];
+            summonEffect.transform.position = basePosition + unitPositions[0];
+            summonEffect.SetParticleColor(SpawnUnits[0].DataHandler.Data.UnitRank);
         }
         else
         {
             SpawnUnits[0].StateMachine.CallUnitMove(basePosition + unitPositions[1]);
             SpawnUnits[1].transform.position = basePosition + unitPositions[2];
+            summonEffect.transform.position = basePosition + unitPositions[2];
+            summonEffect.SetParticleColor(SpawnUnits[0].DataHandler.Data.UnitRank);
         }
     }
-    
-    
+
+    // 상호작용 EventSystem 함수
+    #region Interaction Cooe
+
+    private LayerMask layerMask;
+    private Camera mainCamera;
+    private bool isDrag;
+
+    // TIle Move Arrow
+    private Vector3[] unitPositions = new Vector3[3];
+    private LineRenderer arrowLine = null;
+    private Vector3 drawStartPos;
+    private Collider hitTileCol;
+    private const float unitPostiontOffset = 0.25f;
+    private const float raycastDistance = 100f;
+
     public void OnPointerDown(PointerEventData eventData) // 처음 눌렀으 때,
     {
         if (IsFreeze)
@@ -88,67 +65,10 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             if (UnitCount > 0 && !CantUnitMove())
             {
                 ActivateClickUI();
-                IsClick = true;
-            }
-        }
-    }
-    
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (IsClick)
-        {
-            ResetClick();
-            CloseStatusUI();
-        }
-    }
-
-    private void CloseStatusUI()
-    {
-        if (unitStatus != null && unitStatus.gameObject.activeSelf)
-        {
-            unitStatus.ClosePopupUI();
-        }
-    }
-    private void ResetClick()
-    {
-        IsClick = false;
-        timer = 0f;
-    }
-    
-    private async void Update()
-    {
-        if (IsClick && timer < pressTime)
-        {
-            timer += Time.deltaTime;
-            
-            if (timer > pressTime)
-            {
-                DeActivateClickUI();
-                unitStatus = await UIManager.Instance.ShowPopupUI<UI_UnitStatus>(EUIRCode.UI_UnitStatus);
-                unitStatus.UpdateUnitInfo(SpawnUnits[0]);
             }
         }
     }
 
-    private void ActivateClickUI()
-    {
-        if (UnitCount >= 2 && SpawnUnits[0].DataHandler.Data.UnitRank < EUnitRank.Legendary)
-        {
-            UI_Combination.SetCombinationUI(this);                    
-        }
-        UI_Sell.OnSellBtn(SpawnUnits[0].DataHandler.Data.UnitRank, this);
-                
-        float Range = SpawnUnits[0].StatHandler.CurrentStat.AttackRange;
-
-        Unit_AttackRange.SetAttackRange(transform, Range);
-    }
-    
-    private void DeActivateClickUI()
-    {
-        UI_Combination.DisableCombinationUI();
-        UI_Sell.DisableCombinationUI();
-        Unit_AttackRange.gameObject.SetActive(false);
-    }
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (UnitCount == 0 || CantUnitMove() || IsStatusEffect())
@@ -170,17 +90,11 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             arrowLine.widthMultiplier = 0.4f;
             if (hit.collider != hitTileCol)
             {
-                if (IsClick)
+                if (UnitAttackRange.gameObject.activeSelf)
                 {
-                    ResetClick();
-
-                    if (Unit_AttackRange.gameObject.activeSelf)
-                    {
-                        DeActivateClickUI();
-                    }
-                    CloseStatusUI();
+                    DeActivateClickUI();
                 }
-                
+
                 hitTileCol = hit.collider;
                 DrawArrow(hitTileCol.transform.position);
             }
@@ -188,6 +102,83 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         else
         {
             arrowLine.widthMultiplier = 0.0f;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (!isDrag)
+            return;
+
+        UnitAttackRange.gameObject.SetActive(false);
+
+        arrowLine.widthMultiplier = 0f;
+        hitTileCol = null;
+
+        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance, layerMask))
+        {
+            UnitTile targetTile = hit.collider.GetComponent<UnitTile>();
+            if (targetTile == this || targetTile.IsStatusEffect() || targetTile.CantUnitMove() || IsStatusEffect() ||
+                CantUnitMove())
+            {
+                isDrag = false;
+                return;
+            }
+
+            SwapUnit(targetTile);
+        }
+
+        isDrag = false;
+
+        if (UnitStatus != null && UnitStatus.gameObject.activeSelf)
+        {
+            UnitStatus.gameObject.SetActive(false);
+        }
+    }
+
+    #endregion 
+
+    // 상호작용에 발생하는 이벤트 
+    #region Interaction Event
+
+    public UI_UnitStatus UnitStatus { get; set; }
+    public Unit_AttackRange UnitAttackRange { get; set; }
+    public UI_Combination UICombination { get; set; }
+    public UI_Sell UISell { get; set; }
+
+    // Click Timer
+    [SerializeField] private bool IsClick;
+    private float timer;
+    private readonly float pressTime = 0.5f;
+    
+    private async void ActivateClickUI()
+    {
+        if (UnitCount >= 2 && SpawnUnits[0].DataHandler.Data.UnitRank < EUnitRank.Legendary)
+        {
+            UICombination.SetCombinationUI(this);
+        }
+
+        UISell.OnSellBtn(SpawnUnits[0].DataHandler.Data.UnitRank, this);
+
+        float Range = SpawnUnits[0].StatHandler.CurrentStat.AttackRange;
+
+        UnitAttackRange.SetAttackRange(transform, Range);
+        
+        UnitStatus = await UIManager.Instance.ShowPopupUI<UI_UnitStatus>(EUIRCode.UI_UnitStatus);
+        UnitStatus.UpdateUnitInfo(SpawnUnits[0]);
+    }
+
+    private void DeActivateClickUI()
+    {
+        UICombination.DisableCombinationUI();
+        UISell.DisableCombinationUI();
+        UnitAttackRange.gameObject.SetActive(false);
+        
+        if (UnitStatus != null && UnitStatus.gameObject.activeSelf)
+        {
+            UnitStatus.ClosePopupUI();
         }
     }
 
@@ -222,33 +213,17 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         );
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    private bool CantUnitMove() // 유닛이 움직이는지 판단
     {
-        if (!isDrag)
-            return;
-
-        Unit_AttackRange.gameObject.SetActive(false);
-
-        arrowLine.widthMultiplier = 0f;
-        hitTileCol = null;
-
-        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance, layerMask))
-        {
-            UnitTile targetTile = hit.collider.GetComponent<UnitTile>();
-            if (targetTile == this || targetTile.IsStatusEffect() || targetTile.CantUnitMove() || IsStatusEffect() ||
-                CantUnitMove())
-            {
-                isDrag = false;
-                return;
-            }
-
-            SwapUnit(targetTile);
-        }
-
-        isDrag = false;
+        return SpawnUnits[0] != null &&
+               (SpawnUnits[0].StateMachine.IsEntityState(SpawnUnits[0].StateMachine.MoveState) ||
+                SpawnUnits[0].StatusHandler.IsHardCC);
     }
+    
+    #endregion
+
+    // 유닛 이동 이벤트
+    #region Unit Move Event
 
     public void SwapUnit(UnitTile targetTile) //타일 유닛 교체
     {
@@ -286,24 +261,35 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             SpawnUnits[1].StateMachine.CallUnitMove(basePosition + unitPositions[2]);
         }
     }
+    
+
+    #endregion
+    
+    // 유닛 비활성화 이벤트
+    #region DeActivate Unit
 
     public void DeActivateUnit()
     {
         if (GameManager.Instance.UnitSpawn.SpawnEnemyID.ContainsKey(SpawnUnits[0].Id))
         {
-            GameManager.Instance.UnitSpawn.SpawnEnemyID[SpawnUnits[0].Id] = Mathf.Min(0, GameManager.Instance.UnitSpawn.SpawnEnemyID[SpawnUnits[0].Id]);
+            GameManager.Instance.UnitSpawn.SpawnEnemyID[SpawnUnits[0].Id] =
+                Mathf.Min(0, GameManager.Instance.UnitSpawn.SpawnEnemyID[SpawnUnits[0].Id]);
         }
-        
+
         GameManager.Instance.UnitSpawn.CheckMaterialUnit(SpawnUnits[UnitCount - 1].Id, false);
-        
+
         SpawnUnits[UnitCount - 1].DisableUnit();
         SpawnUnits[UnitCount - 1] = null;
         UnitCount--;
-        
+
         // 유닛이 1마리 남아있으면 위치 재구성
         if (UnitCount == 1)
         {
             GameManager.Instance.UnitSpawn.Controller.TileEvents.ReconstructSpawnUnit(this);
+        }
+        else // 아예 없다면 소환 버튼 언블록 시도
+        {
+            CallUnBlockSummonBtn();
         }
     }
 
@@ -315,9 +301,9 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             {
                 GameManager.Instance.UnitSpawn.SpawnEnemyID[SpawnUnits[i].Id]--;
             }
-            
+
             GameManager.Instance.UnitSpawn.CheckMaterialUnit(SpawnUnits[i].Id, false);
-            
+
             SpawnUnits[i].gameObject.SetActive(false);
             SpawnUnits[i] = null;
         }
@@ -325,16 +311,29 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         UnitCount = 0;
     }
 
-    private bool CantUnitMove() // 유닛이 움직이는지 판단
+    public void CallUnBlockSummonBtn()
     {
-        return SpawnUnits[0] != null &&
-               (SpawnUnits[0].StateMachine.IsEntityState(SpawnUnits[0].StateMachine.MoveState) ||
-                SpawnUnits[0].StatusHandler.IsHardCC);
+        if (GameManager.Instance.UnitSpawn.Controller.IsFullTile)
+        {
+            GameManager.Instance.UnitSpawn.Controller.CallUnBlockSummonBtn();
+        }
     }
 
+    #endregion
+    
+    // 타일 상태 이상 이벤트
+    #region Tile Status Event Code
+    
+    // StatusEffect
+    private Effect statusEffect;
+    private Coroutine statusEffectCoroutine;
+    private float statusEffectDuration;
 
-    #region TileEventCode
-
+    // Freeze 
+    public bool IsFreeze { get; private set; }
+    // Lava
+    public bool IsLava { get; private set; }
+    
     public void SetStatutEffectUnitTile(TileStatusEffectInfo effectInfo) // 타일 이벤트
     {
         statusEffectDuration = effectInfo.activeDuration;
@@ -418,9 +417,16 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             IsLava = isStatus;
         }
 
-        if (!IsStatusEffect() && UnitCount == 1)
+        if (!IsStatusEffect())
         {
-            GameManager.Instance.UnitSpawn.Controller.TileEvents.ReconstructSpawnUnit(this);
+            if (UnitCount == 0)
+            {
+                CallUnBlockSummonBtn();
+            }
+            else if(UnitCount == 1)
+            {
+                GameManager.Instance.UnitSpawn.Controller.TileEvents.ReconstructSpawnUnit(this);
+            }
         }
 
         statusEffect.gameObject.SetActive(false);
@@ -462,5 +468,17 @@ public class UnitTile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     #endregion
 
-    
+
+    private void Awake()
+    {
+        layerMask = LayerMask.GetMask("UnitTile");
+
+        arrowLine = GetComponent<LineRenderer>();
+
+        unitPositions[0] = Vector3.zero;
+        unitPositions[1] = new Vector3(-unitPostiontOffset, 0, unitPostiontOffset);
+        unitPositions[2] = new Vector3(unitPostiontOffset, 0, -unitPostiontOffset);
+
+        mainCamera = Camera.main;
+    }
 }

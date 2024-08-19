@@ -65,12 +65,12 @@ public class TutorialEvent
     private void SummonHighlightEvent()
     {
         summonBtn.enabled = true;
-        
         controller.HighlightEventOn(ETutorialOrder.Summon, SummonEventCallback);
     }
 
     private void SummonEventCallback()
     {
+        controller.TouchArea.SetActive(false);
         summonBtn.interactable = true;
         summonBtn.onClick.AddListener(SummonAfterEvent);
     }
@@ -78,6 +78,7 @@ public class TutorialEvent
     private void SummonAfterEvent()
     {
         summonBtn.onClick.RemoveListener(SummonAfterEvent);
+        controller.TouchArea.SetActive(true);
         controller.DialogueEvent.StartDialouge();
     }
 

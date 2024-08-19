@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,28 +8,25 @@ public class BlockButton : MonoBehaviour
 {
     [SerializeField] private GameObject combinationBtn;
     [SerializeField] private GameObject sellBtn;
-
-    void OnEnable()
+    [SerializeField]  private GameObject unitStatusUI;
+    
+    public async void Init()
     {
-        CheckActive(combinationBtn);
-    }
-
-    private void CheckActive(GameObject btn)
-    {
-/*        if (!combinationBtn.gameObject.activeSelf)
-        {
-            Debug.Log("Disable Image");
-            gameObject.SetActive(false);
-        }*/
+        unitStatusUI = await ResourceManager.Instance.GetUIGameObject(EUIRCode.UI_UnitStatus);
+        unitStatusUI.SetActive(false);
     }
 
     public void DisableCombinationUI()
     {
-        /*        tile = null;*/
+        if (unitStatusUI == null)
+        {
+            unitStatusUI = GameManager.Instance.UnitSpawn.Controller.UnitTiles[0].UnitStatus.gameObject;
+        }
+        
         combinationBtn.SetActive(false);
         sellBtn.SetActive(false);
         gameObject.SetActive(false);
         GameManager.Instance.UnitSpawn.Controller.UnitAttackRange.gameObject.SetActive(false);
-        /*CheckActive(combinationBtn);*/
+        unitStatusUI.SetActive(false);
     }
 }

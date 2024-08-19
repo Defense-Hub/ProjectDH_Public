@@ -42,8 +42,17 @@ public class UI_Combination : MonoBehaviour
     }
 
     public void DisableCombinationUI()
-    {        
-        tile = null;
+    {
+        if (tile != null)
+        {
+            if (tile.UnitStatus != null)
+            {
+                tile.UnitStatus.gameObject.SetActive(false);
+            }
+
+            tile = null;
+        }
+        
         gameObject.SetActive(false);
         blockImage.SetActive(false);
         uiSell.gameObject.SetActive(false);

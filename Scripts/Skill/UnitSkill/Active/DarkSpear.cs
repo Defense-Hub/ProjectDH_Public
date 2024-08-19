@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -20,13 +19,13 @@ public class DarkSpear : ActiveSkill
 
     public override void UseSkill()
     {
-        base.UseSkill();
         Init();
         ActiveSkill();
     }
 
     private void ActiveSkill()
     {
+        if (!isTargetOn) return;
         InitEffect();
         SoundManager.Instance.PlayInGameSfx(EInGameSfx.DarkSpear);
 

@@ -35,6 +35,7 @@ public class CombinationSystem
 
         tile.SetUnit(unit);
         GameManager.Instance.UnitSpawn.Controller.TileEvents.ReconstructSpawnUnit(tile);
+        tile.CallUnBlockSummonBtn();
     }
 
     public void CombinationAdvancedUnit(int targetID)

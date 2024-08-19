@@ -36,6 +36,7 @@ public class TileEventHandler
             // 1마리 남아있는 유닛을 현재 타일로 옮겨줌
             matchingTile.MoveSingleUnitToOriginalTile(targetTile);
             targetTile.UnitCount++;
+            controller.CallUnBlockSummonBtn();
         }
         else
         {
@@ -85,9 +86,21 @@ public class TileEventHandler
             tile.DeActiveEffect(ECCType.Lava);
             if (tile.UnitCount == 1) // 합쳐질 유닛이 있다면 유닛 합치기
             {
-                ReconstructSpawnUnit(tile);   
+                ReconstructSpawnUnit(tile);
             }
         }
     }
 
+    public void DeActiveTileInFreeze()
+    {
+        List<UnitTile> freezeTileList = controller.UnitTiles.FindAll(tile => tile.IsFreeze);
+        foreach (UnitTile tile in freezeTileList)
+        {
+            tile.DeActiveEffect(ECCType.Freeze);
+            if (tile.UnitCount == 1) // 합쳐질 유닛이 있다면 유닛 합치기
+            {
+                ReconstructSpawnUnit(tile);
+            }
+        }
+    }
 }

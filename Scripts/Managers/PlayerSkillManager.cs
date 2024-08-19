@@ -11,8 +11,8 @@ public class PlayerSkillManager : MonoBehaviour
 
     // 가운데 ( 현재 스킬 )
     public ActiveSkill CurActiveSkill { get; private set; }
-
     [SerializeField] private PlayerSkillUI SkillUI;
+    private bool isSkillActivate = false;
 
     [Header("# DEV ONlY")]
     public int PrevCnt;
@@ -21,7 +21,7 @@ public class PlayerSkillManager : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.PlayerSkill = this;
-        CurActiveSkill = new ActiveSkill();
+        CurActiveSkill = null;
         PrevSkillStack = new Stack<ActiveSkill>();
         PostSkillStack = new Stack<ActiveSkill>();
     }
@@ -32,10 +32,28 @@ public class PlayerSkillManager : MonoBehaviour
         PostCnt = PostSkillStack.Count;
     }
 
+    public void DeactivateSkill()
+    {
+        isSkillActivate = false;
+    }
+
     public void ActiveSkill()
     {
-        if (CurActiveSkill == null) return;
+        // 스킬 시전 중 or 타겟이 없을 때 예외 처리
+        if (CurActiveSkill == null || isSkillActivate) 
+        {
+            Debug.LogError("스킬을 시전할 수 없습니다.");
+            return; 
+        }
         CurActiveSkill.UseSkill();
+        isSkillActivate = true;
+
+        if (!CurActiveSkill.CanActiveSkill())
+        {
+            Debug.LogError("Target이 없습니다.");
+            isSkillActivate = false;
+            return;
+        }
 
         // 스킬 사용 이후 현재 slot에 있는 ActiveSkill를 CurSkill로 전환
         if(PrevSkillStack.Count != 0)
@@ -51,7 +69,6 @@ public class PlayerSkillManager : MonoBehaviour
     // Unit이 생성될 때 ActiveSkill이 있다면 전부 AddSkill
     public void AddSkill(ActiveSkill newSkill)
     {
-        Debug.Log("AddSkill");
         // 기존 Skill을 Prev로 옮기고
         if (CurActiveSkill != null)
             PrevSkillStack.Push(CurActiveSkill);

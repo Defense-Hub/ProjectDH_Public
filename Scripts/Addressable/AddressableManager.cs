@@ -63,7 +63,7 @@ public class AddressableManager : Singleton<AddressableManager>
             EAddressableType.DarkEnemy => typeof(EDarkEnemyRCode),
             EAddressableType.Map => typeof(EMapRcode),
             EAddressableType.HuntEnemy => typeof(EHuntEnemyCode),
-            EAddressableType.Thumbnail => typeof(EUnitRCode),
+            EAddressableType.Thumbnail => typeof(EAtlasRcode),
             _ => throw new NotImplementedException()
         };
         

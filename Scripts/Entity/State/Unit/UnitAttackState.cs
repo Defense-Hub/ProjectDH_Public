@@ -63,7 +63,7 @@ public class UnitAttackState : UnitBaseState
         }
         Projectile projectile = GameManager.Instance.Pool.SpawnFromPool((int)EOhterRcode.O_Projectile).ReturnMyComponent<Projectile>();
         projectile.transform.position = stateMachine.Unit.transform.position;
-        projectile.Init(stateMachine.Unit.StatHandler.CurrentStat, stateMachine.Unit.TargetEnemy);
+        projectile.Init(stateMachine.Unit.StatHandler.CurrentStat, stateMachine.Unit.TargetEnemy, stateMachine.Unit.Id);
     }
 
     private Vector3 GetTargetDirection()

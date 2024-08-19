@@ -13,8 +13,6 @@ public class IceAge : ActiveSkill
 
     public override void UseSkill()
     {
-        base.UseSkill();
-        // TODO : 최대 폭발 범위까지 게이지 채우기
         InitUI();
     }
 
@@ -50,6 +48,7 @@ public class IceAge : ActiveSkill
     public override void EndSkill()
     {
         explodeEffect.OnEnd -= EndSkill;
+        explodeEffect.gameObject.SetActive(false);
         base.EndSkill();
     }
 }

@@ -35,7 +35,7 @@ public class Enemy : Entity
     public virtual void EnemyInit(int key)
     {
         EnemyData = GameDataManager.Instance.EnemyDatas[key].GetEnemyData();
-
+        StatusHandler.IsHardCC = false;
         SetEnemyState();
     }
 
@@ -53,7 +53,7 @@ public class Enemy : Entity
     public virtual void DEV_EnemyInit(EnemyData data)
     {
         EnemyData = data;
-
+        StatusHandler.IsHardCC = false;
         SetEnemyState();
     }
 
@@ -103,6 +103,11 @@ public class Enemy : Entity
         yield return dieAnimLength;
 
         GameManager.Instance.Stage.CheckStageClear();
+        // 이펙트 꺼지도록 방어코드
+        if (StateMachine.HardCCState.CurCCEffect != null)
+            StateMachine.HardCCState.DeActivateEffect();
+        StatusHandler.StopRunningCoroutine();
+
         gameObject.SetActive(false);
         SubtractHealthEvent();
     }

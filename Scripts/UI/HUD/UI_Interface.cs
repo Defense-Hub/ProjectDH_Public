@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
 
 using Sequence = DG.Tweening.Sequence;
+using Unity.VisualScripting;
 
 public class UI_Interface : UI_HUD
 {
@@ -34,6 +33,7 @@ public class UI_Interface : UI_HUD
         PlayerDataManager.Instance.inGameData.OnChangeGold += UpdateGoldText;
         PlayerDataManager.Instance.inGameData.OnChangeGemStone += UpdateGemStoneText;
         PlayerDataManager.Instance.inGameData.OnChangeGold += CheckSummonBtn;
+        GameManager.Instance.UnitSpawn.Controller.OnUnBlockSummonBtn+= UnBlockSummonBtn;
     }
 
     public override void Init()
@@ -56,16 +56,30 @@ public class UI_Interface : UI_HUD
         GetButton((int)Buttons.Btn_Myth).AddOnClickEvent(MythOnClickEvent);
         GetButton((int)Buttons.Btn_Gacha).AddOnClickEvent(GachaOnClickEvent);
         GetButton((int)Buttons.Btn_Misson).AddOnClickEvent(MissionOnClickEvent);
-        
+        GetButton((int)Buttons.Btn_2X).AddOnClickEvent(UpdateGameSpeed);
+
         GetObject((int)Objects.Object_BossUI).SetActive(false);
         GetObject((int)Objects.Object_MonsterUI).SetActive(false);
+        GetObject((int)Objects.Object_MonsterUI).SetActive(false);
+        GetButton((int)Buttons.Btn_2XBG).gameObject.SetActive(false); 
+        
+        if (GetButton((int)Buttons.Btn_Close).TryGetComponent(out BlockButton block))
+        {
+            block.Init();
+            block.gameObject.SetActive(false);
+        }
+
+        if (GameManager.Instance.Tutorial != null)
+        {
+            GetObject((int)Objects.Object_GameSpeed).gameObject.SetActive(false); 
+        }
+        
     }
 
     private void UpdateStageTimer(int currentTimer)
     {
         // 타이머 디스플레이 업데이트
         TimeSpan timerSpan = TimeSpan.FromSeconds(currentTimer);
-        // Debug.Log("Timer Update");
         GetText((int)Texts.TXT_Timer).text = string.Format("{0:D2}:{1:D2}", timerSpan.Minutes, timerSpan.Seconds);
     }
 
@@ -79,8 +93,22 @@ public class UI_Interface : UI_HUD
         GetText((int)Texts.TXT_GemStone).text = amount.ToString();
     }
 
+    private void UpdateGameSpeed()
+    {
+        BtnAnimaiton(Buttons.Btn_2X);
+        if (Time.timeScale == 1)
+        {
+            GameManager.Instance.System.SetGameSpeed(2);
+            GetButton((int)Buttons.Btn_2XBG).gameObject.SetActive(true);
+            BtnAnimaiton(Buttons.Btn_2XBG);
+            return;
+        }
+        GameManager.Instance.System.SetGameSpeed(1);
+        BtnAnimaiton(Buttons.Btn_2XBG);
+        GetButton((int)Buttons.Btn_2XBG).gameObject.SetActive(false);
+    }
+
     #region 몬스터 UI
-    // TODO :: 보스 UI는 동적생성 사용
     // 스테이지 몬스터 종류에 따라 몬스터 UI 업데이트
     public void UpdateStageStartEnemyUI()
     {
@@ -176,12 +204,12 @@ public class UI_Interface : UI_HUD
 
     private void CheckSummonBtn(int amount)
     {
-        if (PlayerDataManager.Instance.inGameData.IsUnitSpawn())
+        if (PlayerDataManager.Instance.inGameData.IsUnitSpawn() && !GameManager.Instance.UnitSpawn.Controller.IsFullTile)
         {
-            UnBlockSummonBtn();
+            UnBlockSummonBtn(true);
             return;
         }
-        BlockSummonBtn();
+        UnBlockSummonBtn(false);
     }
 
     public bool CanSummon()
@@ -251,15 +279,10 @@ public class UI_Interface : UI_HUD
     }
     
 
-    public void BlockSummonBtn()
+    public void UnBlockSummonBtn(bool isUnBlock)
     {
         if (GetButton((int)Buttons.Btn_Summon) != null)
-            GetButton((int)Buttons.Btn_Summon).interactable = false;
+            GetButton((int)Buttons.Btn_Summon).interactable = isUnBlock;
     }
-
-    public void UnBlockSummonBtn()
-    {
-        if (GetButton((int)Buttons.Btn_Summon)!=null)
-            GetButton((int)Buttons.Btn_Summon).interactable = true;
-    }
+    
 }

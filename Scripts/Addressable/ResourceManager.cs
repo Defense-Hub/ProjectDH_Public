@@ -23,7 +23,7 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
 
     private Dictionary<int, GameObject> uiDictionary = new Dictionary<int, GameObject>();
 
-    public void ResetUI()
+    public void ResetStageResource()
     {
         uiDictionary.Clear();
     }
@@ -52,16 +52,29 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
     {
         GameObject obj;
         int idx = (int)uiType;
-        if (uiDictionary.ContainsKey(idx))
-        {
-            obj = uiDictionary[idx];
-        }
-        else
-        {
-            obj = await AddressableManager.Instance.InstantiateAsync(EAddressableType.UI, idx);
-            uiDictionary.Add(idx, obj);
-        }
 
+        try
+        {
+            if (uiDictionary.TryGetValue(idx, out var value))
+            {
+                obj = value;
+            }
+            else
+            {
+                obj = await AddressableManager.Instance.InstantiateAsync(EAddressableType.UI, idx);
+                uiDictionary.Add(idx, obj);
+            }
+
+            obj.SetActive(true);
+            return obj;
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{uiType} => Create Error");
+            Console.WriteLine(e);
+            obj = uiDictionary[(int)uiType];
+        }
+        
         obj.SetActive(true);
         return obj;
     }
@@ -69,6 +82,9 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
     [ContextMenu("Set")]
     public async Task SetPoolData()
     {
+        currentEnemyType = (int)EAddressableType.WaterEnemy;
+        await LoadEnemyAsset();
+        
         GameManager.Instance.Pool.SetPoolData<EUnitRCode>(UnitDataList);
         GameManager.Instance.Pool.SetPoolData<EEnemyType>(EnemyDataList);
         GameManager.Instance.Pool.SetPoolData<EEffectRcode>(EffectDataList);
@@ -77,7 +93,7 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
         await MapDataInit();
         
         GameManager.Instance.Pool.StartPooling();
-        ResetUI();
+        ResetStageResource();
     }
     
     [ContextMenu("Rel")]
@@ -106,7 +122,7 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
     {
         currentEnemyType = (int)EAddressableType.WaterEnemy;
 
-        await Task.WhenAll(LoadEnemyAsset(), LoadUnitAsset(), LoadEffectAsset(), LoadOtherAsset());
+        await Task.WhenAll(LoadUnitAsset(), LoadEffectAsset(), LoadOtherAsset());
 
     }
     private async Task LoadEnemyAsset()
@@ -157,7 +173,7 @@ public class ResourceManager : Singleton<ResourceManager> // 어드레서블에�
     {
         LoadMaps = new GameObject[2];
         curMapNum = loadMapNum = 0;
-
+        
         await LoadMapAsset();
         await LoadMapAsset();
 

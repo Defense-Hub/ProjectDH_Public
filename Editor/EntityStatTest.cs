@@ -20,7 +20,8 @@ public class EntityStatTest : EditorWindow
     {
         EditorGUILayout.LabelField("인게임 상태에서만 활성화됩니다.", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("한마리 씩 Test해야합니다.", EditorStyles.boldLabel);
-        if (!Application.isPlaying) curIdx = -1;
+        if (!Application.isPlaying) return;
+        
         ShowData();   
     }
 
@@ -31,8 +32,7 @@ public class EntityStatTest : EditorWindow
 
     private void ShowData()
     {
-        if(curIdx != -1)
-            InitData();
+        InitData();
         var style = new GUIStyle(GUI.skin.button);
         style.alignment = TextAnchor.MiddleLeft;
         GUILayout.BeginHorizontal();

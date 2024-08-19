@@ -12,7 +12,7 @@ public class UI_NameInput : UI_Popup
     private readonly int minLength = 2;
     private readonly int maxLength = 7;
 
-    private string curTXT;
+    private string curInput;
 
     private void Start()
     {
@@ -22,13 +22,34 @@ public class UI_NameInput : UI_Popup
 
     private void InitUI()
     {
-        input.onEndEdit.AddListener(CheckInput);
+        // 커서 활성화
+        ActivateCursor("");
+        // input field 선택될 때마다 커서 활성화
+        input.onSelect.AddListener(ActivateCursor);
+        // 빈 칸이 입력되는지 확인
+        input.onValueChanged.AddListener(CheckBlank);
+        // 입력 끝나면 curInput 업데이트
+        input.onEndEdit.AddListener(UpdateInput);
         warningTXT.text = $"{minLength} ~ {maxLength} 글자 이내로 입력해주세요";
     }
 
-    private void CheckInput(string name)
+    private void ActivateCursor(string name)
     {
-        curTXT = name;
+        input.ActivateInputField();
+    }
+
+    private void CheckBlank(string name)
+    {
+        string newText = name.Replace(" ", "");
+        if (name != newText)
+        {
+            input.text = newText;
+        }
+    }
+
+    private void UpdateInput(string name)
+    {
+        curInput = name;
     }
 
     public void OnConfirmBtnClick()
@@ -39,15 +60,15 @@ public class UI_NameInput : UI_Popup
             Warning();
         else
             // 설정 가능한 닉네임 길이면 이름 업데이트
-            SetNickName(curTXT);
+            SetNickName(curInput);
     }
 
     private bool IsValidLength()
     {
-        if(curTXT == null) 
+        if(curInput == null) 
             return false;
 
-        return curTXT.Length < maxLength && curTXT.Length >= minLength;
+        return curInput.Length < maxLength && curInput.Length >= minLength;
     }
 
     private void SetNickName(string name)

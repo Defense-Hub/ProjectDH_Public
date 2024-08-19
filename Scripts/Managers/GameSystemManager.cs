@@ -31,14 +31,14 @@ public class GameSystemManager : MonoBehaviour
     {
         if (!GameManager.Instance.UnitSpawn.Controller.IsAvailableSpawn())
         {
-            Debug.LogWarning("소환 타일이 다 찼습니다 !");
+            Debug.LogWarning("Gacha => Summon Tile is Full");
             return (int)EGachaResult.NoSpace;
         }
 
         int requiredCurrency = GameDataManager.Instance.GambleProbabilityDatas[gambleType].RequiredGemStone;
         if (!PlayerDataManager.Instance.inGameData.HasGemStone(requiredCurrency))
         {
-            Debug.LogWarning("돈이 부족합니다 !");
+            Debug.LogWarning("Gacha short of Money");
             return (int)EGachaResult.NoMoney;
         }
 

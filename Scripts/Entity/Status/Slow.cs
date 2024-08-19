@@ -3,25 +3,38 @@ using UnityEngine;
 
 public class Slow : IStatus
 {
-    Coroutine slowCoroutine;
+    //Coroutine slowCoroutine;
     float slowTime;
+    CCInfo slowCCInfo;
+
     public void Apply(StatusHandler handler, SpecialAttack specialAttackData, Enemy target)
     {
         if (target.StatusHandler.IsHardCC) return;
 
         slowTime = specialAttackData.Slow.EffectDuration;
-        if (slowCoroutine != null)
-            handler.StopRunningCoroutine(slowCoroutine);
-        SlowData slowData = specialAttackData.Slow;
-        slowCoroutine = handler.RunCoroutine(ActiveSlow(target, slowData));
+        slowCCInfo = new CCInfo
+        {
+            ccType = ECCType.Slow,
+            duration = slowTime
+        };
+
+        if (handler.coroutine != null)
+            handler.StopRunningCoroutine();
+        handler.coroutine = handler.RunCoroutine(ActiveSlow(target, specialAttackData.Slow.Delta));
     }
 
-    private IEnumerator ActiveSlow(Enemy target, SlowData slowData)
+    private IEnumerator ActiveSlow(Enemy target, float delta)
     {
         target.StatusHandler.IsHardCC = true;
-        target.Stat.MoveSpeed *= slowData.Delta;
+        target.StateMachine.SetCCInfo(slowCCInfo);
+        target.StateMachine.HardCCState.ActivateEffect();
+        target.Stat.MoveSpeed *= delta;
+
         yield return new WaitForSeconds(slowTime);
+
         target.StatusHandler.IsHardCC = false;
+        target.StateMachine.SetDefaultCCInfo();
+        target.StateMachine.HardCCState.DeActivateEffect();
         target.Stat.MoveSpeed = target.EnemyData.MoveSpeed;
     }
 }

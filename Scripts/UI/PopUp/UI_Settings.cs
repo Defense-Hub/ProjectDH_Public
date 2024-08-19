@@ -11,15 +11,12 @@ public class UI_Settings : UI_Popup
     enum Buttons
     {
         Btn_Close,
-        Btn_1X,
-        Btn_2X,
         Btn_MainToLobby,
         Btn_TutorialToLobby
     }
 
     enum GameObjects
     {
-        Obj_GameSpeed,
         Obj_MainToLobby,
         Obj_TutorialToLobby
     }
@@ -37,8 +34,6 @@ public class UI_Settings : UI_Popup
         Bind<GameObject>(typeof(GameObjects));
 
         GetButton((int)Buttons.Btn_Close).AddOnClickEvent(ClosePopupUI);
-        GetButton((int)Buttons.Btn_1X).AddOnClickEvent(() => GameManager.Instance.System.SetGameSpeed(1));
-        GetButton((int)Buttons.Btn_2X).AddOnClickEvent(() => GameManager.Instance.System.SetGameSpeed(2));
         GetButton((int)Buttons.Btn_MainToLobby).AddOnClickEvent(() =>
         {
             SoundManager.Instance.StopBgm();
@@ -94,15 +89,13 @@ public class UI_Settings : UI_Popup
     // 로비 - 사운드만
     public void LobbySceneSetting()
     {
-        GetObject((int)GameObjects.Obj_GameSpeed).SetActive(false);
         GetObject((int)GameObjects.Obj_MainToLobby).gameObject.SetActive(false);
         GetObject((int)GameObjects.Obj_TutorialToLobby).gameObject.SetActive(false);
     }
 
-    // 게임씬  - 사운드 + 배속 + 로비버튼
+    // 게임씬  - 사운드 + 로비버튼
     public void GameSceneSetting()
     {
-        GetObject((int)GameObjects.Obj_GameSpeed).SetActive(true);
         GetObject((int)GameObjects.Obj_MainToLobby).gameObject.SetActive(true);
         GetObject((int)GameObjects.Obj_TutorialToLobby).gameObject.SetActive(false);
     }
@@ -110,7 +103,6 @@ public class UI_Settings : UI_Popup
     // 튜토리얼씬 - 사운드 + 로비버튼
     public void TutorialSceneSetting()
     {
-        GetObject((int)GameObjects.Obj_GameSpeed).SetActive(false);
         GetObject((int)GameObjects.Obj_MainToLobby).gameObject.SetActive(false);
 
         // 두번째 튜토리얼 부터만 로비로 돌아가기 버튼 활성화

@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class StageManager : MonoBehaviour
 {
-    [field:Header("# Sheet Data")]
-    [field:SerializeField ] public StageData StageData { get; private set; }
+    [field: Header("# Sheet Data")]
+    [field: SerializeField] public StageData StageData { get; private set; }
+
     [field: Header("# Stage Info")]
     [field: SerializeField] public int CurStageLevel { get; private set; }
 
@@ -27,9 +29,10 @@ public class StageManager : MonoBehaviour
     private Coroutine spawnEnemyCoroutine;
     private readonly int initHuntMissionStageLevel = 3;
     private readonly float mapChangeTime = 1f;
-    
+
     [field: Header("# BossTest ")]
     [HideInInspector] public bool TestMode;
+
     [HideInInspector] public int TestWaveTime = 99999;
     [HideInInspector] public DEV_BossType DEV_BossType = DEV_BossType.WaterEnemy;
     [HideInInspector] public EnemyData DEV_BossData = new EnemyData(2, 10000, 10);
@@ -38,22 +41,24 @@ public class StageManager : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.Stage = this;
-        
+
         wait = new WaitForSeconds(spawnDelayTime);
 
         timer = gameObject.AddComponent<Timer>();
         OnTimerEvent += timer.StartTimer;
-        
     }
+
     public void InitStageData()
     {
-        if (TestMode) 
+        StageData = GameDataManager.Instance.StageData;
+        if (TestMode)
         {
             StageData.BossWaveTime = TestWaveTime;
             StageData.RecoveryTime = 0;
             StageData.MaxStageLevel = 1;
             StageData.BossStageLevel = 1;
         }
+
         // 방어코드
         CurStageLevel = 1;
 
@@ -61,33 +66,37 @@ public class StageManager : MonoBehaviour
         {
             EnemyWayPoints[i] = transform.GetChild(i);
         }
-
-        StageData = GameDataManager.Instance.StageData;
     }
+
     public void GameStart()
     {
         UIManager.Instance.UI_Interface.UpdateStageClearEnemyUI();
-        OnTimerEvent?.Invoke( StageData.RecoveryTime, StartStage);
+        OnTimerEvent?.Invoke(StageData.RecoveryTime, StartStage);
         SoundManager.Instance.PlayBgm(EBgm.Main);
     }
-    
-    private void StartStage()
+
+    private async void StartStage()
     {
         IsStageClear = false;
-        
-        if (!IsBossStage && CurStageLevel != 0 && CurStageLevel %  StageData.BossStageLevel == 0)
+
+        if (!IsBossStage && CurStageLevel != 0 && CurStageLevel % StageData.BossStageLevel == 0)
         {
             IsBossStage = true;
-            AnalyticsManager.Instance.AnalyticsStageCount();
+
+            UI_BossIndicator ui = await UIManager.Instance.ShowPopupUI<UI_BossIndicator>(EUIRCode.UI_BossIndicator);
+            ui.SetUI();
+            
             if (TestMode)
             {
                 DEV_SpawnBossEnemy((EAddressableType)DEV_BossType);
             }
             else
             {
+                AnalyticsManager.Instance.AnalyticsStageCount();
                 SpawnBossEnemy();
             }
-            OnTimerEvent?.Invoke( StageData.BossWaveTime, GameManager.Instance.System.GameOver);
+
+            OnTimerEvent?.Invoke(StageData.BossWaveTime, GameManager.Instance.System.GameOver);
         }
         else
         {
@@ -97,8 +106,9 @@ public class StageManager : MonoBehaviour
             }
 
             spawnEnemyCoroutine = StartCoroutine(SpawnBasicEnemyCoroutine());
-            OnTimerEvent?.Invoke( StageData.BasicWaveTime, StageClear);
+            OnTimerEvent?.Invoke(StageData.BasicWaveTime, StageClear);
         }
+
         UIManager.Instance.UI_Interface.UpdateStageStartEnemyUI();
 
         if (CurStageLevel == initHuntMissionStageLevel)
@@ -111,7 +121,7 @@ public class StageManager : MonoBehaviour
     {
         //int enemySpawnNum = TestMode ? 1 : MaxEnemySpawnNum;
 
-        while (curEnemySpawnNum < StageData. MaxEnemySpawnNum) // Enemy 소환 
+        while (curEnemySpawnNum < StageData.MaxEnemySpawnNum) // Enemy 소환 
         {
             Enemy enemy = null;
             enemy = GameManager.Instance.Pool.SpawnFromPool((int)EEnemyType.Basic).ReturnMyComponent<Enemy>();
@@ -145,14 +155,14 @@ public class StageManager : MonoBehaviour
 
     private void StageInit() // 스테이지 초기화 함수
     {
-
         if (SpawnEnemyList.Count == 0)
         {
-            PlayerDataManager.Instance.inGameData.ChangeGold( GameDataManager.Instance.GameCurrencyData.StageClearBonusGold);
+            PlayerDataManager.Instance.inGameData.ChangeGold(GameDataManager.Instance.GameCurrencyData
+                .StageClearBonusGold);
         }
-        
+
         curEnemySpawnNum = 0;
-        
+
         // foreach 루프문은 컬렉션 반복중에 컬렉션 수정이 안된다.
         for (int i = SpawnEnemyList.Count - 1; i >= 0; i--)
         {
@@ -162,16 +172,17 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    private void StageClear()
+    private async void StageClear()
     {
         if (CurStageLevel == StageData.MaxStageLevel)
         {
             GameManager.Instance.System.GameClear();
             return;
         }
+
         IsStageClear = true;
-        
-        StageInit(); 
+
+        StageInit();
 
         // 튜토리얼 스테이지 라면
         if (GameManager.Instance.Tutorial != null)
@@ -179,9 +190,9 @@ public class StageManager : MonoBehaviour
             TutorialStage();
             return;
         }
-        
+
         CurStageLevel++;
-        
+
         // 테마 변경
         if (IsBossStage)
         {
@@ -191,15 +202,16 @@ public class StageManager : MonoBehaviour
         else
         {
             // 용암 이벤트
-            if (CurStageLevel == StageData.BossStageLevel * 2)
+            if (CurStageLevel == StageData.BossStageLevel * ((int)EMapRcode.M_Fire + 1))
             {
+                await UIManager.Instance.ShowPopupUI<UI_LavaIndicator>(EUIRCode.UI_LavaIndicator);
                 GameManager.Instance.UnitSpawn.Controller.ActivateLava(StageData.RecoveryTime);
             }
-        
+
             UIManager.Instance.UI_Interface.UpdateStageClearEnemyUI();
             OnTimerEvent?.Invoke(StageData.RecoveryTime, StartStage);
         }
-        
+
         AnalyticsManager.Instance.AnalyticsStageEnd();
     }
 
@@ -207,6 +219,7 @@ public class StageManager : MonoBehaviour
     {
         UIManager.Instance.UI_Interface.UpdateStageClearEnemyUI();
         await ResourceManager.Instance.ChangeMapTheme();
+
         OnTimerEvent?.Invoke(StageData.RecoveryTime, StartStage);
     }
 
@@ -214,10 +227,11 @@ public class StageManager : MonoBehaviour
     {
         SpawnEnemyList.Remove(enemy);
 
-        if(!IsStageClear)
-            PlayerDataManager.Instance.inGameData.ChangeGold(GameDataManager.Instance.GameCurrencyData.EnemyPerKillGold);
-        
-        if ( CurStageLevel == StageData.BossStageLevel * 2 && SpawnEnemyList.Count == 0)
+        if (!IsStageClear)
+            PlayerDataManager.Instance.inGameData.ChangeGold(GameDataManager.Instance.GameCurrencyData
+                .EnemyPerKillGold);
+
+        if (CurStageLevel == StageData.BossStageLevel * 2 && SpawnEnemyList.Count == 0)
         {
             GameManager.Instance.UnitSpawn.Controller.DeActivateLava();
         }
@@ -225,10 +239,11 @@ public class StageManager : MonoBehaviour
 
     public void CheckStageClear()
     {
-        if(IsStageClear)
+        if (IsStageClear)
             return;
-        
-        if ((!IsBossStage && curEnemySpawnNum == StageData.MaxEnemySpawnNum && SpawnEnemyList.Count == 0) || (IsBossStage && SpawnEnemyList.Count == 0)) // 마지막 몬스터라면
+
+        if ((!IsBossStage && curEnemySpawnNum == StageData.MaxEnemySpawnNum && SpawnEnemyList.Count == 0) ||
+            (IsBossStage && SpawnEnemyList.Count == 0)) // 마지막 몬스터라면
         {
             StageClear();
         }
@@ -236,7 +251,7 @@ public class StageManager : MonoBehaviour
 
     private void TutorialStage() // 튜토리얼 스테이지 이벤트
     {
-        OnTimerEvent?.Invoke(0, null);  
+        OnTimerEvent?.Invoke(0, null);
         GameManager.Instance.Tutorial.TutorialUIController.DialogueEvent.StartDialouge();
     }
 }

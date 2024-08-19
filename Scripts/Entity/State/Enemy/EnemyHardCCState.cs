@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyHardCCState : EnemyBaseState
 {
-    private Effect effect;
+    public Effect CurCCEffect { get; private set; }
     public EnemyHardCCState(EntityStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -11,9 +11,7 @@ public class EnemyHardCCState : EnemyBaseState
     {
         base.Enter();
         Stop();
-        // TODO :: 추후 EnemyHardCCState에 Stun이 아닌 다른 스탯 적용시 구조 수정 
-        effect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_EntityStun).ReturnMyComponent<Effect>();
-        effect.SetEffect(enemy.EffectWayPoint.localScale, enemy.EffectWayPoint.position);
+        ActivateEffect();
     }
 
     public override void Exit()
@@ -38,7 +36,8 @@ public class EnemyHardCCState : EnemyBaseState
         DeActivateEffect();
 
         enemy.StateMachine.curCCInfo.callBack?.Invoke();
-        enemy.StateMachine.curCCInfo.ccType = ECCType.Default;
+        enemy.StatusHandler.IsHardCC = false;
+        enemy.StateMachine.SetDefaultCCInfo();
     }
     
     private void CheckDuration()
@@ -51,12 +50,29 @@ public class EnemyHardCCState : EnemyBaseState
         }
     }
 
-    private void DeActivateEffect()
+    public void ActivateEffect()
     {
-        if (effect != null)
+        DeActivateEffect();
+        switch (enemy.StateMachine.curCCInfo.ccType)
         {
-            effect.gameObject.SetActive(false);
-            effect = null;
+            case ECCType.Slow:
+                CurCCEffect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_EntitySlow).ReturnMyComponent<Effect>();
+                CurCCEffect.transform.parent = enemy.EffectWayPoint;
+                break;
+            case ECCType.Stun:
+                CurCCEffect = GameManager.Instance.Pool.SpawnFromPool((int)EEffectRcode.E_EntityStun).ReturnMyComponent<Effect>();
+                break;
+        }
+        CurCCEffect.SetEffect(enemy.EffectWayPoint.localScale, enemy.EffectWayPoint.position);
+    }
+
+    public void DeActivateEffect()
+    {
+        if (CurCCEffect != null)
+        {
+            CurCCEffect.gameObject.SetActive(false);
+            CurCCEffect.transform.parent = GameManager.Instance.Pool.poolTransforms[1];
+            CurCCEffect = null;
         }
     }
 }

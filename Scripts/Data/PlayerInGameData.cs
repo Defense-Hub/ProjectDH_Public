@@ -104,6 +104,7 @@ public class PlayerInGameData
     {
         return HasGold(UnitSpawnRequriedGold);
     }
+    
     public PlayerInGameData()
     {
         if (GameDataManager.Instance != null)
