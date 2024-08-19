@@ -183,6 +183,20 @@
 
 ---
 
+### 🛠 Unity Google Sheet
+#### 💡 사용 이유  
+<img src="https://github.com/user-attachments/assets/d1b1094e-683e-4d85-9919-64d1285d59bd" alt="coding" width="750px" />    
+<br/>
+- Goolgle Spread Sheet를 사용했을 때, Collection, 커스텀 클래스를 저장할 수 있어, 효율적이고 직관적인 데이터 관리가 가능하므로 협업에 용이하여 사용    
+
+#### 📌 구현 내용
+<img src="https://github.com/user-attachments/assets/7c471409-10c3-4c5a-9a5c-6edd036a1718" alt="coding" width="350px" />   
+
+- 게임에 필요한 모든 데이터를 구글 스프레드시트로 관리하며, 데이터의 추가 및 삭제에도 유연하게 대응할 수 있도록 확장 가능한 설계를 중점으로 개발  
+- Unity Google Sheet를 사용하여 시트에 저장된 데이터를 JSON 파일로 변환하고, 이를 로컬에서 불러와 사용하는 방식으로 구현 
+
+---
+
 ### 🛠 Unity Gaming Service Analytics
 #### 💡 사용 이유  
 - **User Test 에서 실제 플레이 환경의 이벤트를 전송 받아 유저 데이터를 확보, 
