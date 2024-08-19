@@ -304,6 +304,7 @@
 - Indicator를 추가하여 유저 편의성을 높였다.
     
 <img src="https://github.com/user-attachments/assets/5f58e245-fb0c-40e5-b7fe-81e5a71252ba" alt="coding" width="250px" />  
+<br/>  
 <img src="https://github.com/user-attachments/assets/fdfee0bc-1119-42d1-8bfd-061a9500c490" alt="coding" width="250px" />
 
 </div>
