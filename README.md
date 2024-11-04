@@ -140,21 +140,12 @@
 <br/>
 <img src="https://github.com/user-attachments/assets/ed9a50b9-017e-4e1a-b220-6a4d28e37b69" alt="coding" width="550px" />  
 <br/>
-## <p align="center"> 고양이 낚시 미니게임   </p>
-
----
 
 ### 🛠 Batching
 #### 💡 설명
 - Batch 최적화를 위해 Static Batching, Sprite Atlas, Terrain To Mesh 사용   
 <img src="https://github.com/user-attachments/assets/b9a3fa67-d9cc-4520-b002-65fdf79d98cc" alt="coding" width="700px" />  
 <br/>
-
-## 👨‍👨‍👦 소개
-| 이름    |Github|블로그|
-|-----|-----|---|
-| 지승도   |<a href="https://github.com/seungdo1234">![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)</a>|https://deff-dev.tistory.com
----
 
 ### 🛠 UI 동적 생성
 #### 💡 사용 이유
@@ -171,13 +162,11 @@
 `ShowPopupUI<T> 메서드`  
 - 특정 UI 팝업을 비동기로 생성  
 - ResourceManager를 통해 해당 UI 타입의 게임 오브젝트를 불러오고, 이를 UIManager의 Root 오브젝트 하위에 배치  
-- 제네릭 타입을 사용하여 다양한 팝업 UI를 유연하게 생성   
-#### `Info` **2D 미니게임**
+- 제네릭 타입을 사용하여 다양한 팝업 UI를 유연하게 생성   **
 
 `SetCanvas 메서드`  
 - 동적으로 생성된 UI 오브젝트가 Canvas를 포함하도록 설정하는 역할  
-- Canvas의 renderMode를 `ScreenSpaceOverlay`로 설정하여 UI가 화면에 항상 오버레이 되도록 하며, 필요한 경우 정렬 순서를 지정하여 UI가 올바르게 렌더링되도록 함  
-#### `Stack` **Unity/C#**   
+- Canvas의 renderMode를 `ScreenSpaceOverlay`로 설정하여 UI가 화면에 항상 오버레이 되도록 하며, 필요한 경우 정렬 순서를 지정하여 UI가 올바르게 렌더링되도록 함     
 
 `UI_Base 클래스`   
 - UI 컴포넌트를 관리하는 기본 클래스  
@@ -188,7 +177,6 @@
 - UI의 클릭 및 드래그 이벤트를 처리하는 클래스  
 - 이 클래스는 Unity의 이벤트 시스템과 통합되어, 다양한 UI 상호작용을 관리    
 <br/>
-#### `Made by` 개발 1명 (담당), 아트 1명
 
 
 ### 🛠 Unity Google Sheet
