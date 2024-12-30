@@ -2,8 +2,10 @@
 <img src="https://github.com/user-attachments/assets/dbcfeed1-418b-4926-81db-ecbcd2a21faf" alt="coding" width="450px" />  
 <br/>    
 <br/>    
-    
-### Help Me Guardians !👋
+
+## <p align="center"> ✋ Help Me Guardians!
+###### <p align="center"> <b> _(Asset을 제외한 소스 코드만 올려놓은 Repository 입니다)_ </b>
+
 <br/>    
 <br/> 
 
